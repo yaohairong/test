@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<TempList>
+    <Temp>UI/Layout/Template/NPGUIButton/btn_SetOn.npTemplate</Temp>
+    <Temp>UI/Layout/Template/NPGUIButton/btn_Back.npTemplate</Temp>
+    <Temp>UI/Layout/Template/NPGUIButton/btn_Confirm.npTemplate</Temp>
+    <Temp>UI/Layout/Template/NPGUIButton/btn_Cancel.npTemplate</Temp>
+    <Temp>UI/Layout/Template/NPGUIButton/btn_Confuse.npTemplate</Temp>
+    <Temp>UI/Layout/Template/NPGUIButton/btn_Retry.npTemplate</Temp>
+    <Temp>UI/Layout/Template/NPGUIButton/btn_SetOff.npTemplate</Temp>
+    <Temp>UI/Layout/Template/NPGUIButton/btn_SL.npTemplate</Temp>
+</TempList>

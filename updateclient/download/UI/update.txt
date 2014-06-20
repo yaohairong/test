@@ -1,0 +1,1 @@
+%JAVA_HOME%\bin;C:\cygwin64\dev
