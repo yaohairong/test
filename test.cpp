@@ -13,6 +13,12 @@ class B
 int main(int argc, char *argv[])
 {
 	B b;
-	printf("%d %d %p\n", b.a, b.b, b.p);
-	return 0;
+	for (int i = 40; i < 48; i++)
+	{
+		for (int j = 30; j < 38; j++)
+		{
+			printf("\x1b[%d;%dmhello world\nx1b[0m", i, j);
+		}
+	}
+
 }

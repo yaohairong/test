@@ -9,8 +9,6 @@ size_t process_data(void *buffer, size_t size, size_t nmemb, void *user_p)
 	static int count = 0;
 	FILE *fp = (FILE *)user_p;
 	size_t return_size = fwrite(buffer, size, nmemb, fp);
-	cout << (char *)buffer << endl;
-	cout<<"count"<<(count++)<<endl;
 	return return_size;
 }
 
@@ -28,8 +26,8 @@ int main()
 		curl_global_cleanup();
 		return -1;
 	}
-	FILE *fp = fopen("data.html", "ab+");
-	curl_easy_setopt(curl, CURLOPT_URL, "http://192.168.1.7/update/+%20(2).png");
+	FILE *fp = fopen("loading-2.png", "w");
+	curl_easy_setopt(curl, CURLOPT_URL, "http://192.168.1.7/update/loading-2.png");
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &process_data);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
 	curl_easy_perform(curl);

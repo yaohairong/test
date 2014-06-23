@@ -73,7 +73,8 @@ int main()
 	}
 
 	char buf[1024] = {0};
-	int total_bytes = 0;
+	int recv_bytes = 0;
+	int send_bytes = 0;
 	epoll_event events[20];
 	for (;;)
 	{
@@ -107,6 +108,8 @@ int main()
 							break;
 						}
 					}
+					recv_bytes = 0;
+					send_bytes = 0;
 					printf("client connect from %s\n", inet_ntoa(client_addr.sin_addr));
 					if (setnonblocking(client_fd) < 0)
 					{
@@ -169,15 +172,21 @@ int main()
 					}
 					else
 					{
-						char* p = buf;
+						recv_bytes += rn;
+						printf("recv bytes %d: %d\n", rn, recv_bytes);
 						int left = rn;
+						char* ptr = buf;
+						bool writable = true;
 						while (left > 0)
 						{
-							int sn = send(e->data.fd, p + rn - left, left, 0);
-							printf("send %d\n", sn);
+							int sn = send(e->data.fd, ptr, left, 0);
 							if (sn < 0)
 							{
-								if (errno != EINTR && errno != EAGAIN)
+								if (errno == EINTR || errno == EAGAIN)
+								{
+									break;
+								}
+								else
 								{
 									perror("send");
 									if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, e->data.fd, &ev) < 0)
@@ -185,12 +194,22 @@ int main()
 										perror("epoll ctrl del");
 									}
 									close(e->data.fd);
+									writable = false;
 									break;
 								}
 							}
-							left -= sn;
+							else
+							{
+								left -= sn;
+								ptr += sn;
+								send_bytes += sn;
+								printf("send bytes %d\n", send_bytes);
+							}
 						}
-
+						if (!writable)
+						{
+							break;
+						}
 					}
 				}
 			}
