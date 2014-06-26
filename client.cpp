@@ -31,10 +31,10 @@ enum ConnectState
 
 void Stop()
 {
-	exit(1);
 #ifdef WIN32
 	WSACleanup();
 #endif
+	exit(1);
 }
 
 void Start()
@@ -154,7 +154,6 @@ void Connect()
 void Loop()
 {
 	char buf[1024] = {0};
-	int index = 0;
 	while (true)
 	{
 		fd_set read_fds;
@@ -261,7 +260,7 @@ void Loop()
 							fd = INVALID_SOCKET;
 							return;
 						}
-						
+
 #else
 						if (errno != EINTR && errno != EAGAIN)
 						{
@@ -281,44 +280,50 @@ void Loop()
 						fflush(out_file);
 					}
 				}
-				index++;
-				for ( ; ;)
+				if (FD_ISSET(fd, &write_fds))
 				{
-					int count = file_size - send_count;
-					if (count > 0)
+					for ( ; ;)
 					{
-						int sn = send(fd, file_buf + send_count, count, 0);
-						if (sn < 0)
+						int count = file_size - send_count;
+						if (count > 0)
 						{
+							int sn = send(fd, file_buf + send_count, count, 0);
+							if (sn < 0)
+							{
 #ifdef WIN32
-							int err = WSAGetLastError();
-							if (err != WSAEWOULDBLOCK)
-							{
-								cs = CS_DISCONNECT;
-								printf("send disconnect\n");
-								closesocket(fd);
-								fd = INVALID_SOCKET;
-								return;
-							}
+								int err = WSAGetLastError();
+								if (err != WSAEWOULDBLOCK)
+								{
+									cs = CS_DISCONNECT;
+									printf("send disconnect\n");
+									closesocket(fd);
+									fd = INVALID_SOCKET;
+									return;
+								}
 #else
-							if (errno != EINTR && errno != EAGAIN)
-							{
-								perror("send disconnect");
-								cs = CS_DISCONNECT;
-								close(fd);
-								fd = INVALID_SOCKET;
-								return;
-							}
+								if (errno != EINTR && errno != EAGAIN)
+								{
+									perror("send disconnect");
+									cs = CS_DISCONNECT;
+									close(fd);
+									fd = INVALID_SOCKET;
+									return;
+								}
 #endif
-							printf("send block\n");
-						}
-						else
-						{
-							send_count += sn;
-							send_bytes += sn;
-							printf("send bytes %d\n", send_bytes);
+								printf("send block\n");
+							}
+							else
+							{
+								send_count += sn;
+								send_bytes += sn;
+								printf("send bytes %d\n", send_bytes);
+							}
 						}
 					}
+				}
+				if (FD_ISSET(fd, except_fds))
+				{
+					printf("except\n");
 				}
 			}
 		}
@@ -342,14 +347,14 @@ void Loop()
 		{
 			exit(1);
 		}
-		
+
 		fseek(in_file, SEEK_SET, SEEK_END);
 		file_size = ftell(in_file);
 		file_buf = new char[file_size];
 		fseek(in_file, SEEK_SET, 0);
 		fread(file_buf, file_size, 1, in_file);
 
-		
+
 		Start();
 		while (true)
 		{
