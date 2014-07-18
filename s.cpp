@@ -14,13 +14,13 @@ int main()
 	int server_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (server_fd < 0)
 	{
-		perror("socket\n");
+		perror("socket");
 		exit(1);
 	}
 	int opt = 1;
 	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
 	{
-		perror("set sock opt\n");
+		perror("set sock opt");
 		exit(1);
 	}
 	sockaddr_in server_addr;
@@ -31,23 +31,34 @@ int main()
 
 	if (bind(server_fd, (sockaddr*)&server_addr, sizeof(sockaddr)) < 0)
 	{
-		perror("bind\n");
+		perror("bind");
 		exit(1);
 	}
 
 	if (listen(server_fd, 20) < 0)
 	{
-		perror("listen\n");
+		perror("listen");
 		exit(1);
 	}
 	int client_fd = accept(server_fd, (sockaddr*)&client_addr, &addr_len);
 	if (client_fd < 0)
 	{
-		perror("accept\n");
+		perror("accept");
 		exit(1);
 	}
-	printf("client connect from %s\n", inet_ntoa(client_addr.sin_addr));
-	int nr = recv(e->data.fd, buf + n, 1023 - n, 0);
-	printf("hello world\n");
+	int pid = vfork();
+	if (pid < 0)
+	{
+		perror("vfork");
+		exit(1);
+	}
+	else if (pid == 0)
+	{
+		fprintf(stdout, "child\n");
+	}
+	else
+	{
+		fprintf(stdout, "parent\n");	
+	}
 	return 0;
 }
