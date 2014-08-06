@@ -1,4 +1,4 @@
-nclude <iostream>
+#include <iostream>
 #include <vector>
 
 using namespace std;
@@ -23,7 +23,7 @@ void Add(vector<int>& list, int s, int n)
 int main()
 {
 	vector<int> list;
-	Add(list, 1,  30);
-	cout<<"cnt"<<cnt<<endl;
+	Add(list, 1,  7);
+	cout<<"cnt "<<cnt<<endl;
 	return 0;
 }
