@@ -1,6 +1,18 @@
-#include <mysql.h>
+#include <mysql/mysql.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
+#include <sys/time.h>
+
+typedef unsigned uint32;
+
+uint32 GetMSTime()
+{
+	timeval tv;
+	timezone tz;
+	gettimeofday(&tv, &tz);
+	return tv.tv_sec * 1000000 + tv.tv_usec;
+}
 
 int main()
 {
@@ -13,6 +25,7 @@ int main()
 	}
 	char sql[128] = {0};
 	snprintf(sql, 128, "SELECT * from t1");
+	uint32 t = GetMSTime();
 	if (mysql_query(&mysql, sql) != 0)
 	{
 		printf("failed query: Error %s\n", mysql_error(&mysql));
@@ -27,18 +40,19 @@ int main()
 	fields = mysql_fetch_fields(result);
 	for (int i = 0; i < num_fields; i++)
 	{
-		printf("%s\t", fields[i].name);
+		//printf("%s\t", fields[i].name);
 	}
-	printf("\n");
+	//printf("\n");
 	while ((row = mysql_fetch_row(result)) != NULL)
 	{
 		lengths = mysql_fetch_lengths(result);
 		for (int i = 0; i < num_fields; i++)
 		{
-			printf("%s\t", row[i] ? row[i] : "NULl");
+			//printf("%s\t", row[i] ? row[i] : "NULl");
 		}
-		printf("\n");
+		//printf("\n");
 	}
+	printf("time %d\n", GetMSTime() - t);
 
 	return 0;
 }

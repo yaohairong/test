@@ -40,6 +40,9 @@ int main()
 		perror("listen");
 		exit(1);
 	}
+	sockaddr_in client_addr;
+	bzero(&client_addr, sizeof(client_addr));
+	socklen_t addr_len;
 	int client_fd = accept(server_fd, (sockaddr*)&client_addr, &addr_len);
 	if (client_fd < 0)
 	{

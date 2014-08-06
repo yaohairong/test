@@ -1,9 +1,21 @@
 #include <stdio.h>
 #include <string.h>
+#include <random>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+struct Test
+{
+	int a = 0;
+	char msg[2][128];
+};
 
 static int uint_2_str(unsigned int x, char *str)
 {
-	int i = 0;
+	unsigned int i = 0;
 	unsigned int xx = x, t;
 
 	while (xx) {
@@ -13,38 +25,33 @@ static int uint_2_str(unsigned int x, char *str)
 	str[i] = '\0';
 
 	xx = i;
-	for (i = 0; i < xx/2; i++) {
+	for (i = 0; i < xx; i++) {
 		t = str[i];
 		str[i] = str[xx - i -1];
 		str[xx - i -1] = t;
 	}
 
-	return xx;
+	return 0;
 }
-int main(int argc, char *argv[])
+struct B;
+struct A
 {
-	int a[][4] =
+	shared_ptr<B> m_b;
+	~A()
 	{
-		{1, 0, 1, 0},
-		{0, 1, 0, 1},
-		{1, 1, 1, 1},
-		{0, 0, 0, 1},
-		{1, 0, 0, 0},
-		{0, 0, 1, 0},
-		{1, 1, 1, 0},
-	};
-	int n = sizeof(a) / sizeof(a[0]);
-	for (int i = 0; i < n; i++)
-	{
-		int m = 0;
-		for (int j = 0; j < 4; j++)
-		{
-			printf("%d", a[i][j]);
-			if (a[i][j])
-			{
-				m |= 1 << j;
-			}
-		}
-		printf("\n%x\n", m);
+		cout<<"~A"<<endl;
 	}
+};
+struct B
+{
+	weak_ptr<A> m_a;
+	~B()
+	{
+		cout<<"~B"<<endl;
+	}
+};
+int main()
+{
+	Test t;
+	vector<int> vec;
 }
