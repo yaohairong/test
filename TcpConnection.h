@@ -48,4 +48,6 @@ private:
 	ConnectState m_cs;
 	bool m_initialized;
 	SOCKET m_fd;
+	bool m_can_writable;
+	bool m_can_readable;
 };
