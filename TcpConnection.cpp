@@ -3,6 +3,8 @@
 TcpConnection::TcpConnection()
 	: m_cs(CS_DISCONNETED)
 	, m_fd(INVALID_SOCKET)
+	, m_can_readable(false)
+	, m_can_writable(false)
 {
 	m_initialized = false;
 	WSADATA wsaData;
@@ -101,15 +103,20 @@ bool TcpConnection::Initialize()
 
 void TcpConnection::Update()
 {
+	m_can_writable = false;
+	m_can_readable = false;
 	if (m_cs == CS_CONNECTED)
 	{
 		fd_set rset;
+		fd_set wset;
 		FD_ZERO(&rset);
+		FD_ZERO(&wset);
 		FD_SET(m_fd, &rset);
+		FD_SET(m_fd, &wset);
 		timeval tv;
 		tv.tv_sec = 0;
 		tv.tv_usec = 1;
-		int ret = select(0, &rset, NULL, NULL, &tv);
+		int ret = select(0, &rset, &wset, NULL, &tv);
 		if (ret < 0)
 		{
 			closesocket(m_fd);
@@ -121,24 +128,26 @@ void TcpConnection::Update()
 		{
 			if (FD_ISSET(m_fd, &rset))
 			{
-				char buf[128] = {0};
-				int n = recv(m_fd, buf, 128, 0);
-				if (n == 0)
-				{
-					int close = 0;
-				}
-				else if (n < 0)
-				{
-					int nn = -1;
-					closesocket(m_fd);
-					m_fd = INVALID_SOCKET;
-					m_cs = CS_DISCONNETED;
-					OnDisconnected();
-				}
-				else
-				{
-					int nn = 1;
-				}
+				//char buf[128] = {0};
+				//int n = recv(m_fd, buf, 128, 0);
+
+				//if (n <= 0)
+				//{
+				//	int nn = -1;
+				//	closesocket(m_fd);
+				//	m_fd = INVALID_SOCKET;
+				//	m_cs = CS_DISCONNETED;
+				//	OnDisconnected();
+				//}
+				//else
+				//{
+				//	m_can_readable = true;
+				//}
+				m_can_readable = true;
+			}
+			if (FD_ISSET(m_fd, &wset))
+			{
+				m_can_writable = true;
 			}
 		}
 		else
@@ -178,11 +187,45 @@ void TcpConnection::Update()
 			{
 				m_cs = CS_CONNECTED;
 				OnConnectSuccess();
+				m_can_writable = true;
 			}
 		}
 		else
 		{
 			int a = 0;
+		}
+	}
+	if (m_can_readable)
+	{
+		char buf[128] = {0};
+		int n = recv(m_fd, buf, 128, 0);
+		if (n <= 0)
+		{
+			m_can_readable = false;
+			m_can_writable = false;
+			closesocket(m_fd);
+			m_fd = INVALID_SOCKET;
+			m_cs = CS_DISCONNETED;
+			OnDisconnected();
+		}
+		else
+		{
+			printf("recv %s\n", buf);
+		}
+	}
+	if (m_can_writable)
+	{
+		char buf[128] = {0};
+		sprintf_s(buf, 128, "%d", 0);
+		int n = send(m_fd, buf, strlen(buf) + 1, 0);
+		if (n <= 0)
+		{
+			m_can_readable = false;
+			m_can_writable = false;
+			closesocket(m_fd);
+			m_fd = INVALID_SOCKET;
+			m_cs = CS_DISCONNETED;
+			OnDisconnected();
 		}
 	}
 }
