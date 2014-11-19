@@ -393,65 +393,9 @@ void Client::OnMessage()
 	printf("cmd %d\n", cmd);
 	switch (cmd)
 	{
-	case 1002:
-		ResponseLogin();
-		break;
-	case 1015:
-		break;
 	default:
 		printf("unkown message\n");
 		break;
 	}
 }
 
-void Client::ResponseLogin()
-{
-	BeginWrite();
-	WriteInt(1001);
-	WriteInt(0);
-	char buf[64] = {0};
-	snprintf(buf, 64, "hello yhr");
-	WriteStr(buf, 64);
-	EndWrite();
-	BeginWrite();
-	WriteInt(1004);
-	WriteInt(0);
-	WriteInt(1);
-	EndWrite();
-	BeginWrite();
-	WriteInt(1006);
-	WriteInt(0);
-	snprintf(buf, 32, "yhr");
-	WriteStr(buf, 32);
-	int id = 314;
-	WriteInt(id);
-	int vip_rank = 0;
-	WriteInt(vip_rank);
-	int vip_exp = 0;
-	WriteInt(vip_exp);
-	int icon = 2;
-	WriteInt(icon);
-	int rank = 0;
-	WriteInt(rank);
-	int exp = 0;
-	WriteInt(exp);
-	int last_update = 0;
-	WriteInt(last_update);
-	int ac_point = 100;
-	WriteInt(ac_point);
-	int server_time = 0;
-	WriteInt(server_time);
-	char skill[129] = {0};
-	WriteStr(skill, 129);
-	int arena_rank = 123;
-	WriteInt(arena_rank);
-	int score = 34;
-	WriteInt(score);
-	int sign_count = 0;
-	WriteInt(sign_count);
-	int sign_status = 0;
-	WriteInt(sign_status);
-	int login_count = 0;
-	WriteInt(login_count);
-	EndWrite();
-}
