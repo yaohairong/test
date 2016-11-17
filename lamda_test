@@ -1,0 +1,47 @@
+#include <functional>
+#include <iostream>
+
+using namespace std;
+// Visual Studio: Replace the default class in a Console project with 
+//                the following class.
+class Example
+{
+public:
+	class A
+	{
+	public:
+		int a = 0;
+	};
+
+public:
+	static std::function<int()> F()
+	{
+		A a;
+		auto f = [=]()mutable
+		{
+			return ++a.a;
+		};
+		return f;
+	}
+
+	static void Main()
+	{
+		auto d1 = F();
+		auto d2 = F();
+		cout << d1() << endl;
+		cout << d2() << endl;
+		cout << d2() << endl;
+		cout << d2() << endl;
+		cout << d1() << endl;
+	}
+
+};
+
+class B {
+
+};
+
+int main() {
+	Example::Main();
+	return 0;
+}
