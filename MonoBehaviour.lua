@@ -32,8 +32,8 @@ function MonoBehaviour:Update()
 end
 
 function coroutine.wait(t)
-    local time = os.time()
-    while os.time() - time < t do
+    local time = os.clock()
+    while os.clock() - time < t do
         coroutine.yield()
     end
 end
@@ -41,9 +41,9 @@ end
 function co(index)
     return function()
         for i = 1, 5 do
-            local t = os.time()
+            local t = os.clock()
             coroutine.wait(index)
-            print("wait end:", index, os.time() - t, i)
+            print("wait end:", index, os.clock() - t, i)
         end
     end
 end
