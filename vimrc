@@ -33,3 +33,4 @@ augroup Binary
     au BufReadPost *.* set ft=xxd | endif  
 augroup END  
 map <F3> yiw:vim /<C-R>"/j **/*%:e<CR>:cw<CR>
+nmap <F5> :silent !start <CR>
