@@ -33,4 +33,8 @@ augroup Binary
     au BufReadPost *.* set ft=xxd | endif  
 augroup END  
 map <F3> yiw:vim /<C-R>"/j **/*%:e<CR>:cw<CR>
-nmap <F5> :silent !.run <CR>
+if has("win32")
+    nmap <F5> :!start cmd /c .run.bat <CR>
+else
+    nmap <F5> :silent !.run <CR>
+endif
