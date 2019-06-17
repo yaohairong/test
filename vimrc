@@ -11,6 +11,7 @@ set ci
 set si
 set is
 set hls
+set belloff=all
 set encoding=utf-8 
 set termencoding=utf-8 
 set fileencoding=utf-8 
