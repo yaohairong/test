@@ -6,6 +6,7 @@ endif
 set nu
 set nobk
 set noswapfile
+set noundofile
 set ai
 set ci
 set si
