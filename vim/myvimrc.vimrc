@@ -134,6 +134,7 @@ if has("win32")
     map <leader>up :silent !adb push % /storage/emulated/0/Android/data/com.joywinds.rot2/files/%:.:gs?\\?/?<CR>
     map <leader>rm :silent !adb shell rm /storage/emulated/0/Android/data/com.joywinds.rot2/files/%:.:gs?\\?/?<CR>
     map <leader>re :silent !adb shell am start -S -n com.joywinds.rot2/com.unity3d.player.UnityPlayerActivity<CR>
+    map <leader>ch :lcd %:h<CR>
     nmap <M-c> <C-C><C-W>c
     " 打开当前目录 windows
     map <leader>ex :silent !explorer %:p:h<CR>
